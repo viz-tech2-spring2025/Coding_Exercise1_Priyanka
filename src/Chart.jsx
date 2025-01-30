@@ -3,7 +3,7 @@ import * as d3 from "d3";
 export function Chart({ data }) {
   const marginLeft = 200;
   const width = 800;
-  const height = 2100;
+  const height = 2200;
   const marginRight = 40;
   const marginTop = 20;
   const marginBottom = 20;
@@ -64,25 +64,25 @@ export function Chart({ data }) {
         d["Country Name"] !=="Sub-Saharan Africa (IDA & IBRD countries)" &&
         d["Country Name"] !== "Upper middle income" &&
         d["Country Name"] !=="World" &&
-        d["2022"] !== null // Remove rows with null values
+        d["2022"] !== null
     )
     .map((d) => ({
-      country: String(d["Country Name"]).trim(), // Ensure country name is a string
-      agri_percentage: Number(Number(d["2022"]).toFixed(2)), // Convert 2022 to a float
+      country: String(d["Country Name"]).trim(), 
+      agri_percentage: Number(Number(d["2022"]).toFixed(2)), 
     }))
-    .sort((a, b) => b.agri_percentage - a.agri_percentage); // Sort descending by percentage
+    .sort((a, b) => b.agri_percentage - a.agri_percentage); 
 
-  // Create scales
+ 
   const xScale = d3
     .scaleLinear()
-    .domain([0, d3.max(agri_data, (d) => d.agri_percentage)]) // Percentage range
-    .range([0, widthBound]); // Range for bar lengths
+    .domain([0, d3.max(agri_data, (d) => d.agri_percentage)]) 
+    .range([0, widthBound]);
 
   const yScale = d3
     .scaleBand()
-    .domain(agri_data.map((d) => d.country)) // Country names
+    .domain(agri_data.map((d) => d.country)) 
     .range([0, heightBound])
-    .padding(0.15); // Space between bars
+    .padding(0.12); 
 
   //console.log(agri_data);
   
@@ -91,7 +91,7 @@ export function Chart({ data }) {
       <p>Percentage of agricultural land of all countries - 2022 data</p>
       <svg width={width} height={height}>
         {/* Render/ Draw the visualization */} 
-         {/* Y Axis */}
+        
          <g transform={`translate(${marginLeft}, ${marginTop})`}>
           <line x1={0} y1={0} x2={0} y2={heightBound} stroke="white" />
           {agri_data.map((d, i) => (
@@ -109,14 +109,14 @@ export function Chart({ data }) {
           ))}
         </g>
 
-        {/* X Axis */}
+        
         <g transform={`translate(${marginLeft}, ${heightBound + marginTop})`}>
           <line x1={0} y1={0} x2={widthBound} y2={0} stroke="white" />
           {xScale.ticks(5).map((tick, i) => (
             <g key={`x-tick-${i}`} transform={`translate(${xScale(tick)}, 0)`}>
               <line y1={-5} y2={0} stroke="white" />
               <text
-                y={10}
+                y={8}
                 textAnchor="middle"
                 fontSize="7"
                 fill="white"
@@ -127,36 +127,36 @@ export function Chart({ data }) {
             </g>
           ))}
           <text
-            x={widthBound / 2} // Center the label horizontally
-            y={20} // Position below the axis
+            x={widthBound / 2} 
+            y={17} 
             textAnchor="middle"
-            fontSize="8"
+            fontSize="7"
             fill="white"
            >
            Percentage of Agricultural Land
           </text>
         </g>
 
-        {/* Bars */}
+       
         <g transform={`translate(${marginLeft}, ${marginTop})`}>
           {agri_data.map((d, i) => (
             <rect
               key={`bar-${i}`}
-              x={0} // Bars start at 0
+              x={0} 
               y={yScale(d.country)}
-              width={xScale(d.agri_percentage)} // Bar width is determined by xScale
+              width={xScale(d.agri_percentage)} 
               height={yScale.bandwidth()}
               fill="#00b4d8"
             />
           ))}
         </g>
 
-        {/* Bar Labels */}
+ 
         <g transform={`translate(${marginLeft}, ${marginTop})`}>
           {agri_data.map((d, i) => (
             <text
               key={`bar-label-${i}`}
-              x={xScale(d.agri_percentage) + 5} // Position label at the end of the bar
+              x={xScale(d.agri_percentage) + 5} 
               y={yScale(d.country) + yScale.bandwidth() / 2}
               textAnchor="start"
               alignmentBaseline="middle"
